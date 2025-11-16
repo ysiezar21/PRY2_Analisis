@@ -1,5 +1,5 @@
 class nodo {
-    constructor(color = null) { // ← un solo constructor, color opcional
+    constructor(color = null) { 
         this.color = color;
         this.vecinos = [];
     }
@@ -31,9 +31,12 @@ class grafo {
         this.cantidadNodos = 0;
         this.intentos = 0;
         this.numeroConflictos = 0;
+        this.cantidadColoresAumentados = 0;
     }
-
-    agregarNodo(color = null) { // ← único método, con parámetro opcional
+    agregarCantidadColoresAumentado(num){
+        this.cantidadColoresAumentados = num;
+    }
+    agregarNodo(color = null) { 
         const nuevoNodo = new nodo(color);
         this.nodos.push(nuevoNodo);
         this.cantidadNodos += 1;
@@ -83,6 +86,9 @@ class grafo {
             console.log(`Nodo ${indice}: Color ${nodo.conseguirColor()}, Vecinos: ${nodo.vecinos.map(vecino => this.nodos.indexOf(vecino)).join(", ")}`);
             indice += 1;
         }
+        if (this.cantidadColoresAumentados > 0) {
+            console.log(`Cantidad de colores aumentados: ${this.cantidadColoresAumentados}`);
+        }
     }
 
     crearGrafo(numMaximoNodos) {
@@ -90,11 +96,11 @@ class grafo {
         this.agregarNodo();
         for (let i = 1; i < numMaximoNodos; i++) {
             
-            let probabilidadConexion = 100 / this.nodos.length; // ← 'let' agregado
+            let probabilidadConexion = 100 / this.nodos.length; 
 
             for (let j = 0; j < this.nodos.length; j++) {
                 if (Math.random() * 100 < probabilidadConexion) {
-                    let nodonuevo = this.agregarNodo(); // ← 'let' agregado
+                    let nodonuevo = this.agregarNodo(); 
                     this.conectarNodos(nodonuevo, this.nodos[j]);
                     j = this.nodos.length;
                 } else if (j === this.nodos.length - 1) {
