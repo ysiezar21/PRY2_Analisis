@@ -61,22 +61,33 @@ function prueba(){
     grafoprueba.imprimirGrafo();
     
     let grafoprueba2 = new grafo();
-    grafoprueba2.crearGrafo(25);
+    grafoprueba2.crearGrafo(100);
     grafoprueba2 = lasVegas(grafoprueba2, 3);
     grafoprueba2.imprimirGrafo();
 }
 
 function lasVegas(grafo, numeroMaximoDeColores = 3) {
     let intentos = 0;
-    let sub_colores = colores.slice(0,numeroMaximoDeColores);
-
+    let subColores = colores.slice(0,numeroMaximoDeColores);
+    let cantColoresAumentados = 0
+    
     while (true) {
         intentos++;
+        if (intentos % 100000 === 0) {
+            cantColoresAumentados++;
+            if (cantColoresAumentados + numeroMaximoDeColores > colores.length) {
+                console.log("No se pudo encontrar una solución con los colores disponibles.");
+                return null; 
+            } 
+            subColores = colores.slice(0,numeroMaximoDeColores + cantColoresAumentados);
+            grafo.agregarCantidadColoresAumentado(cantColoresAumentados);
+            console.log(`Aumentando número de colores a ${numeroMaximoDeColores + cantColoresAumentados}`);
+        }
 
         grafo.nodos.forEach(nodo => {
-            const indice = Math.floor(Math.random() * numeroMaximoDeColores);
-            //nodo.cambiarColor(sub_colores[indice]);
-            nodo.cambiarColor(indice);
+            const indice = Math.floor(Math.random() * (numeroMaximoDeColores + cantColoresAumentados));
+            nodo.cambiarColor(subColores[indice]);
+
         });
        
         let conflictos = 0;
@@ -98,14 +109,13 @@ function monteCarlo(grafo, numeroMaximoDeColores = 3, iteraciones = 1000) {
     let mejoresConflictos = Infinity;
     let intentos = 0;
     let grafoNuevo = grafo;
-    let sub_colores = colores.slice(0,numeroMaximoDeColores);
+    let subColores = colores.slice(0,numeroMaximoDeColores);
 
     for (let i = 0; i < iteraciones; i++) {
         intentos++;
         grafo.nodos.forEach(nodo => {
             const indice = Math.floor(Math.random() * numeroMaximoDeColores);
-            //nodo.cambiarColor(sub_colores[indice]);
-            nodo.cambiarColor(indice);
+            nodo.cambiarColor(subColores[indice]);
         });
         let conflictos = 0;
         grafo.nodos.forEach(nodo => {
