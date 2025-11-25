@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ControlPanel from './components/ControlPanel/ControlPanel';
 import GraphVisualizer from './components/GraphVisualizer/GraphVisualizer';
+import algorithmService from './services/algorithmService';
 import './styles/components.css';
 
 function App() {
@@ -9,32 +10,49 @@ function App() {
     colorCount: 3,
     algorithm: 'monteCarlo',
     iterations: 1000,
-    autoIncreaseColors: false
+    autoIncreaseColors: false,
+    generarAleatorio: true
   });
   
   const [isRunning, setIsRunning] = useState(false);
   const [executionStats, setExecutionStats] = useState(null);
+  const [graphData, setGraphData] = useState(null);
 
-  const handleRunAlgorithm = () => {
-    console.log('Ejecutando algoritmo con config:', graphConfig);
+  const handleRunAlgorithm = async () => {
     setIsRunning(true);
+    setExecutionStats(null);
     
-    // Simulación de ejecución - luego conectaremos con tus algoritmos reales
-    setTimeout(() => {
-      setIsRunning(false);
+    try {
+      const resultado = await algorithmService.ejecutarAlgoritmo(graphConfig);
+      
       setExecutionStats({
-        intentos: 150,
-        conflictos: 2,
-        tiempo: '1.2s',
-        exito: true
+        intentos: resultado.intentos,
+        conflictos: resultado.conflictos,
+        tiempo: `${resultado.tiempo}ms`,
+        exito: resultado.exito,
+        coloresAumentados: resultado.coloresAumentados || 0,
+        error: resultado.error
       });
-    }, 2000);
+      
+      setGraphData(resultado.grafoVisual);
+      
+      console.log('Resultado del algoritmo:', resultado);
+      
+    } catch (error) {
+      console.error('Error:', error);
+      setExecutionStats({
+        error: 'Error ejecutando el algoritmo',
+        exito: false
+      });
+    } finally {
+      setIsRunning(false);
+    }
   };
 
   const handleConfigChange = (newConfig) => {
     setGraphConfig(newConfig);
-    // Reset stats cuando cambia la configuración
     setExecutionStats(null);
+    setGraphData(null);
   };
 
   return (
@@ -48,7 +66,7 @@ function App() {
       
       <div className="main-content">
         <GraphVisualizer 
-          graphData={null}
+          graphData={graphData}
           config={graphConfig}
           stats={executionStats}
         />
