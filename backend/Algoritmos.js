@@ -53,94 +53,108 @@ const colores = [
   "#4682B4"  // azul acero
 ];
 
-function prueba(){
-    console.log("Función de prueba en Algoritmos.js");
-    let grafoprueba = new grafo();
-    grafoprueba.crearGrafo(25);
-    grafoprueba = monteCarlo(grafoprueba, 3);
-    grafoprueba.imprimirGrafo();
-    
-    let grafoprueba2 = new grafo();
-    grafoprueba2.crearGrafo(100);
-    grafoprueba2 = lasVegas(grafoprueba2, 3);
-    grafoprueba2.imprimirGrafo();
-}
-
-function lasVegas(grafo, numeroMaximoDeColores = 3) {
-    let intentos = 0;
-    let subColores = colores.slice(0,numeroMaximoDeColores);
-    let cantColoresAumentados = 0
-    
-    while (true) {
-        intentos++;
-        if (intentos % 100000 === 0) {
-            cantColoresAumentados++;
-            if (cantColoresAumentados + numeroMaximoDeColores > colores.length) {
-                console.log("No se pudo encontrar una solución con los colores disponibles.");
-                return null; 
-            } 
-            subColores = colores.slice(0,numeroMaximoDeColores + cantColoresAumentados);
-            grafo.agregarCantidadColoresAumentado(cantColoresAumentados);
-            console.log(`Aumentando número de colores a ${numeroMaximoDeColores + cantColoresAumentados}`);
-        }
-
-        grafo.nodos.forEach(nodo => {
-            const indice = Math.floor(Math.random() * (numeroMaximoDeColores + cantColoresAumentados));
-            nodo.cambiarColor(subColores[indice]);
-
-        });
-       
-        let conflictos = 0;
-        grafo.nodos.forEach(nodo => {
-            nodo.vecinos.forEach(vecino => {
-                if (nodo.color === vecino.color) conflictos++;
-            });
-        });
-        conflictos /= 2; 
-
-        if (conflictos === 0) {
-            console.log(`Solución encontrada en ${intentos} intentos`);
-            return grafo; 
-        }
-    }
+function copiarGrafo(g) {
+  return {
+    nodos: g.nodos.map((n, index) => ({
+      id: index,
+      color: n.color,
+      vecinos: n.vecinos.map(v => g.nodos.indexOf(v))
+    })),
+    intentos: g.intentos,
+    numeroConflictos: g.numeroConflictos
+  };
 }
 
 function monteCarlo(grafo, numeroMaximoDeColores = 3, iteraciones = 1000) {
-    let mejoresConflictos = Infinity;
-    let intentos = 0;
-    let grafoNuevo = grafo;
-    let subColores = colores.slice(0,numeroMaximoDeColores);
+  let mejoresConflictos = Infinity;
+  let intentos = 0;
+  let grafoNuevo = grafo;
+  let subColores = colores.slice(0, numeroMaximoDeColores);
+  let frames = [];
 
-    for (let i = 0; i < iteraciones; i++) {
-        intentos++;
-        grafo.nodos.forEach(nodo => {
-            const indice = Math.floor(Math.random() * numeroMaximoDeColores);
-            nodo.cambiarColor(subColores[indice]);
-        });
-        let conflictos = 0;
-        grafo.nodos.forEach(nodo => {
-            nodo.vecinos.forEach(vecino => {
-                if (nodo.color === vecino.color) conflictos++;
-            });
-        });
-        conflictos /= 2;
+  for (let i = 0; i < iteraciones; i++) {
+    intentos++;
+    grafo.nodos.forEach(nodo => {
+      const indice = Math.floor(Math.random() * numeroMaximoDeColores);
+      nodo.cambiarColor(subColores[indice]);
+    });
 
-        if (conflictos < mejoresConflictos) {
-            mejoresConflictos = conflictos;
-            grafoNuevo = grafo;
-            grafoNuevo.intentos = intentos;
-            grafoNuevo.numeroConflictos = mejoresConflictos;
+    let conflictos = 0;
+    grafo.nodos.forEach(nodo => {
+      nodo.vecinos.forEach(vecino => {
+        if (nodo.color === vecino.color) conflictos++;
+      });
+    });
+    conflictos /= 2;
 
-            
-        }
+    // Guardamos un frame de esta iteración
+    frames.push(copiarGrafo(grafo));
+
+    if (conflictos < mejoresConflictos) {
+      mejoresConflictos = conflictos;
+      grafoNuevo = grafo;
+      grafoNuevo.intentos = intentos;
+      grafoNuevo.numeroConflictos = mejoresConflictos;
     }
+  }
 
-    console.log(`Iteraciones: ${iteraciones}, Mejor número de conflictos: ${mejoresConflictos}`);
-    return grafoNuevo;
+  console.log(`Iteraciones: ${iteraciones}, Mejor número de conflictos: ${mejoresConflictos}`);
+  return { grafo: grafoNuevo, frames };
 }
 
+function lasVegas(grafo, numeroMaximoDeColores = 3) {
+  let intentos = 0;
+  let subColores = colores.slice(0, numeroMaximoDeColores);
+  let cantColoresAumentados = 0;
+  let frames = [];
 
+  while (true) {
+    intentos++;
+    if (intentos % 100000 === 0) {
+      cantColoresAumentados++;
+      if (cantColoresAumentados + numeroMaximoDeColores > colores.length) {
+        console.log("No se pudo encontrar una solución con los colores disponibles.");
+        return null; 
+      } 
+      subColores = colores.slice(0, numeroMaximoDeColores + cantColoresAumentados);
+      grafo.agregarCantidadColoresAumentado(cantColoresAumentados);
+      console.log(`Aumentando número de colores a ${numeroMaximoDeColores + cantColoresAumentados}`);
+    }
 
+    grafo.nodos.forEach(nodo => {
+      const indice = Math.floor(Math.random() * (numeroMaximoDeColores + cantColoresAumentados));
+      nodo.cambiarColor(subColores[indice]);
+    });
 
+    // Guardamos un frame de esta iteración
+    frames.push(copiarGrafo(grafo));
 
-prueba();
+    let conflictos = 0;
+    grafo.nodos.forEach(nodo => {
+      nodo.vecinos.forEach(vecino => {
+        if (nodo.color === vecino.color) conflictos++;
+      });
+    });
+    conflictos /= 2;
+
+    if (conflictos === 0) {
+      console.log(`Solución encontrada en ${intentos} intentos`);
+      return { grafo, frames };
+    }
+  }
+}
+
+function prueba() {
+  console.log("Función de prueba en Algoritmos.js");
+  let grafoprueba = new grafo();
+  grafoprueba.crearGrafo(25);
+  grafoprueba = monteCarlo(grafoprueba, 3).grafo;
+  grafoprueba.imprimirGrafo();
+  
+  let grafoprueba2 = new grafo();
+  grafoprueba2.crearGrafo(100);
+  grafoprueba2 = lasVegas(grafoprueba2, 3).grafo;
+  grafoprueba2.imprimirGrafo();
+}
+
+export { monteCarlo, lasVegas, prueba };
