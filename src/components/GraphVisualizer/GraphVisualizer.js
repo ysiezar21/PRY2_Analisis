@@ -1,9 +1,41 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
-const GraphVisualizer = ({ graphData, config, stats }) => {
+const GraphVisualizer = ({ graphData, config, stats, onAddNode, onConnectNodes, mode, selectedNodes }) => {
+  const svgRef = useRef();
+  const [localGraph, setLocalGraph] = useState(graphData);
+
+  // Efecto para sincronizar con graphData externo
+  useEffect(() => {
+    if (graphData) {
+      setLocalGraph(graphData);
+    }
+  }, [graphData]);
+
+  // Manejar clic en el SVG
+  const handleSvgClick = (event) => {
+    if (mode === 'addNode') {
+      const svg = svgRef.current;
+      const point = svg.createSVGPoint();
+      point.x = event.clientX;
+      point.y = event.clientY;
+      const svgPoint = point.matrixTransform(svg.getScreenCTM().inverse());
+      
+      onAddNode(svgPoint.x, svgPoint.y);
+    }
+  };
+
+  // Manejar clic en un nodo
+  const handleNodeClick = (nodeId, event) => {
+    event.stopPropagation();
+    
+    if (mode === 'connect') {
+      onConnectNodes(nodeId);
+    }
+  };
+
   // Función para renderizar el grafo visualmente
   const renderGrafo = () => {
-    if (!graphData) {
+    if (!localGraph || localGraph.nodos.length === 0) {
       return (
         <div className="graph-placeholder">
           <p>El grafo se visualizará aquí</p>
@@ -11,35 +43,49 @@ const GraphVisualizer = ({ graphData, config, stats }) => {
           <p><strong>Colores:</strong> {config.colorCount}</p>
           <p><strong>Algoritmo:</strong> {config.algorithm === 'monteCarlo' ? 'Monte Carlo' : 'Las Vegas'}</p>
           <p><strong>Iteraciones:</strong> {config.iterations}</p>
-          <p>Ejecuta el algoritmo para ver los resultados</p>
+          <p>Usa los controles para agregar nodos o ejecuta el algoritmo</p>
         </div>
       );
     }
 
     return (
       <div className="graph-container">
-        <svg width="100%" height="500" viewBox="0 0 600 500">
+        <svg 
+          ref={svgRef}
+          width="100%" 
+          height="500" 
+          viewBox="0 0 600 500"
+          onClick={handleSvgClick}
+          style={{ cursor: mode === 'addNode' ? 'crosshair' : 'default' }}
+        >
           {/* Renderizar aristas */}
-          {graphData.aristas.map((arista, index) => (
+          {localGraph.aristas.map((arista, index) => (
             <line
               key={index}
-              x1={graphData.nodos[arista.source].x}
-              y1={graphData.nodos[arista.source].y}
-              x2={graphData.nodos[arista.target].x}
-              y2={graphData.nodos[arista.target].y}
+              x1={localGraph.nodos[arista.source].x}
+              y1={localGraph.nodos[arista.source].y}
+              x2={localGraph.nodos[arista.target].x}
+              y2={localGraph.nodos[arista.target].y}
               stroke={arista.tieneConflicto ? "#e74c3c" : "#34495e"}
               strokeWidth={arista.tieneConflicto ? 3 : 2}
+              className="edge"
             />
           ))}
           
           {/* Renderizar nodos */}
-          {graphData.nodos.map((nodo) => (
-            <g key={nodo.id} transform={`translate(${nodo.x}, ${nodo.y})`}>
+          {localGraph.nodos.map((nodo) => (
+            <g 
+              key={nodo.id} 
+              transform={`translate(${nodo.x}, ${nodo.y})`}
+              onClick={(e) => handleNodeClick(nodo.id, e)}
+              style={{ cursor: mode === 'connect' ? 'pointer' : 'default' }}
+            >
               <circle
                 r="20"
-                fill={nodo.color}
-                stroke="#2c3e50"
-                strokeWidth="2"
+                fill={nodo.color || '#3498db'}
+                stroke={selectedNodes.includes(nodo.id) ? "#e74c3c" : "#2c3e50"}
+                strokeWidth={selectedNodes.includes(nodo.id) ? 3 : 2}
+                className="node"
               />
               <text
                 textAnchor="middle"
@@ -47,12 +93,20 @@ const GraphVisualizer = ({ graphData, config, stats }) => {
                 fill="white"
                 fontSize="12"
                 fontWeight="bold"
+                className="node-label"
               >
                 {nodo.id}
               </text>
             </g>
           ))}
         </svg>
+        
+        {/* Información del modo actual */}
+        <div className="mode-info">
+          {mode === 'addNode' && <p>Modo: Agregar Nodos - Haz clic para agregar</p>}
+          {mode === 'connect' && <p>Modo: Conectar - Selecciona dos nodos: {selectedNodes.join(', ')}</p>}
+          {mode === 'view' && <p>Modo: Visualización</p>}
+        </div>
       </div>
     );
   };
