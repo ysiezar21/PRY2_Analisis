@@ -245,6 +245,45 @@ h3 {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+.mode-instructions {
+  margin-top: 15px;
+  padding: 10px;
+  background: #34495e;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #bdc3c7;
+}
+
+.mode-info {
+  margin-top: 15px;
+  padding: 10px;
+  background: #ecf0f1;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.node {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.node:hover {
+  r: 22;
+  stroke-width: 3;
+}
+
+.edge {
+  transition: all 0.3s ease;
+}
+
+.control-panel {
+  /* Asegurar que el panel de control tenga scroll si es necesario */
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .app {
