@@ -1,18 +1,14 @@
-// Importamos las funciones de tu backend
 import { grafo } from '../backend/grafo.js';
 import { monteCarlo, lasVegas } from '../backend/Algoritmos.js';
 
 class AlgorithmService {
   
-  // Crear un grafo basado en la configuración
   crearGrafo(config) {
     const nuevoGrafo = new grafo();
     
     if (config.generarAleatorio) {
-      // Generar grafo aleatorio
       nuevoGrafo.crearGrafo(config.nodeCount);
     } else {
-      // Crear grafo con nodos pero sin conexiones (para modo manual)
       for (let i = 0; i < config.nodeCount; i++) {
         nuevoGrafo.agregarNodo();
       }
@@ -21,95 +17,73 @@ class AlgorithmService {
     return nuevoGrafo;
   }
 
-  // Ejecutar algoritmo Monte Carlo
-  ejecutarMonteCarlo(grafo, colorCount, iterations) {
-    console.log('Ejecutando Monte Carlo...');
-    const startTime = performance.now();
-    
+  ejecutarMonteCarlo(grafo, colorCount, iterations, onFrame) {
     const resultado = monteCarlo(grafo, colorCount, iterations);
-    
-    const endTime = performance.now();
-    const executionTime = (endTime - startTime).toFixed(2);
-    
-    return {
-      grafo: resultado,
-      tiempo: executionTime,
-      intentos: resultado.intentos || iterations,
-      conflictos: resultado.numeroConflictos || 0,
-      exito: resultado.numeroConflictos === 0
-    };
+    return this.reproducirFrames(resultado, onFrame);
   }
 
-  // Ejecutar algoritmo Las Vegas
-  ejecutarLasVegas(grafo, colorCount) {
-    console.log('Ejecutando Las Vegas...');
-    const startTime = performance.now();
-    
+  ejecutarLasVegas(grafo, colorCount, onFrame) {
     const resultado = lasVegas(grafo, colorCount);
-    
-    const endTime = performance.now();
-    const executionTime = (endTime - startTime).toFixed(2);
-    
-    if (resultado === null) {
+    if (!resultado) {
       return {
-        grafo: grafo,
-        tiempo: executionTime,
+        grafo,
+        tiempo: '0',
         intentos: 'No encontrado',
         conflictos: 'N/A',
         exito: false,
         error: 'No se pudo encontrar solución'
       };
     }
-    
+    return this.reproducirFrames(resultado, onFrame);
+  }
+
+  // Reproduce los frames con delay
+  async reproducirFrames(resultado, onFrame) {
+    const startTime = performance.now();
+    for (let i = 0; i < resultado.frames.length; i++) {
+      onFrame(this.convertirGrafoParaVisualizacionFrame(resultado.frames[i]));
+      // Ajusta el delay (en ms) para ver el cambio de cada iteración
+      await new Promise(resolve => setTimeout(resolve, 1));
+    }
+    const endTime = performance.now();
+    const executionTime = (endTime - startTime).toFixed(2);
+
+    const grafoFinal = resultado.grafo;
+
     return {
-      grafo: resultado,
+      grafo: grafoFinal,
       tiempo: executionTime,
-      intentos: resultado.intentos || 'N/A',
-      conflictos: resultado.numeroConflictos || 0,
-      exito: resultado.numeroConflictos === 0,
-      coloresAumentados: resultado.cantidadColoresAumentados || 0
+      intentos: grafoFinal.intentos || 'N/A',
+      conflictos: grafoFinal.numeroConflictos || 0,
+      exito: grafoFinal.numeroConflictos === 0,
+      coloresAumentados: grafoFinal.cantidadColoresAumentados || 0
     };
   }
 
-  // Función principal que orquesta la ejecución
-  async ejecutarAlgoritmo(config) {
+  async ejecutarAlgoritmo(config, onFrame) {
     try {
-      // Crear el grafo
-      const grafo = this.crearGrafo(config);
-      
+      const grafoObj = this.crearGrafo(config);
       let resultado;
-      
-      // Ejecutar el algoritmo seleccionado
       if (config.algorithm === 'monteCarlo') {
-        resultado = this.ejecutarMonteCarlo(grafo, config.colorCount, config.iterations);
+        resultado = await this.ejecutarMonteCarlo(grafoObj, config.colorCount, config.iterations, onFrame);
       } else {
-        resultado = this.ejecutarLasVegas(grafo, config.colorCount);
+        resultado = await this.ejecutarLasVegas(grafoObj, config.colorCount, onFrame);
       }
-      
-      // Convertir el grafo a formato para la visualización
+
       const grafoVisual = this.convertirGrafoParaVisualizacion(resultado.grafo);
-      
-      return {
-        ...resultado,
-        grafoVisual: grafoVisual,
-        config: config
-      };
+      return { ...resultado, grafoVisual, config };
       
     } catch (error) {
       console.error('Error ejecutando algoritmo:', error);
-      return {
-        error: error.message,
-        exito: false
-      };
+      return { error: error.message, exito: false };
     }
   }
 
-  // Convertir el grafo interno a formato para visualización
   convertirGrafoParaVisualizacion(grafo) {
     const nodos = grafo.nodos.map((nodo, index) => ({
       id: index,
       color: nodo.color || '#CCCCCC',
-      x: Math.random() * 500 + 50, // Posición aleatoria temporal
+      x: Math.random() * 500 + 50,
       y: Math.random() * 400 + 50
     }));
 
@@ -117,11 +91,35 @@ class AlgorithmService {
     grafo.nodos.forEach((nodo, index) => {
       nodo.vecinos.forEach(vecino => {
         const targetIndex = grafo.nodos.indexOf(vecino);
-        if (targetIndex > index) { // Evitar duplicados
+        if (targetIndex > index) {
           aristas.push({
             source: index,
             target: targetIndex,
             tieneConflicto: nodo.color === vecino.color
+          });
+        }
+      });
+    });
+
+    return { nodos, aristas };
+  }
+
+  convertirGrafoParaVisualizacionFrame(frame) {
+    const nodos = frame.nodos.map(n => ({
+      id: n.id,
+      color: n.color,
+      x: Math.random() * 500 + 50,
+      y: Math.random() * 400 + 50
+    }));
+
+    const aristas = [];
+    frame.nodos.forEach((nodo, index) => {
+      nodo.vecinos.forEach(targetIndex => {
+        if (targetIndex > index) {
+          aristas.push({
+            source: index,
+            target: targetIndex,
+            tieneConflicto: nodo.color === frame.nodos[targetIndex].color
           });
         }
       });
