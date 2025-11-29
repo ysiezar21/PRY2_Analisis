@@ -2,7 +2,19 @@ import React from 'react';
 import AlgorithmControls from '../AlgorithmControls/AlgorithmControls';
 import GraphControls from '../GraphControls/GraphControls';
 
-const ControlPanel = ({ config, onConfigChange, onRunAlgorithm, isRunning }) => {
+const ControlPanel = ({ 
+  config, 
+  onConfigChange, 
+  onRunAlgorithm, 
+  isRunning,
+  // Agregar estas nuevas props
+  onAddNode,
+  onConnectNodes, 
+  onGenerateRandom,
+  onClearGraph,
+  mode,
+  onModeChange 
+}) => {
   const handleInputChange = (field, value) => {
     onConfigChange({
       ...config,
@@ -56,7 +68,14 @@ const ControlPanel = ({ config, onConfigChange, onRunAlgorithm, isRunning }) => 
         isRunning={isRunning}
       />
 
-      <GraphControls />
+      <GraphControls 
+        onAddNode={onAddNode}
+        onConnectNodes={onConnectNodes}
+        onGenerateRandom={onGenerateRandom}
+        onClearGraph={onClearGraph}
+        mode={mode}
+        onModeChange={onModeChange}
+      />
     </div>
   );
 };
