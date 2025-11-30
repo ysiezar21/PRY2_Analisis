@@ -256,12 +256,17 @@ h3 {
 
 .mode-info {
   margin-top: 15px;
-  padding: 10px;
+  padding: 15px;
   background: #ecf0f1;
-  border-radius: 6px;
+  border-radius: 8px;
   text-align: center;
   font-weight: 600;
   color: #2c3e50;
+  border-left: 4px solid #3498db;
+}
+
+.mode-info p {
+  margin: 5px 0;
 }
 
 .node {
@@ -272,16 +277,234 @@ h3 {
 .node:hover {
   r: 22;
   stroke-width: 3;
+  filter: brightness(1.1);
 }
 
 .edge {
   transition: all 0.3s ease;
 }
 
+.edge:hover {
+  stroke-width: 3;
+}
+
 .control-panel {
-  /* Asegurar que el panel de control tenga scroll si es necesario */
   max-height: 100vh;
   overflow-y: auto;
+}
+
+.graph-container svg {
+  transition: all 0.3s ease;
+}
+
+/* Color Picker Styles */
+.color-picker-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.color-picker {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+  text-align: center;
+}
+
+.color-picker h4 {
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.color-option {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.color-option:hover {
+  transform: scale(1.1);
+  border-color: #3498db;
+}
+
+.cancel-button {
+  padding: 8px 16px;
+  background: #95a5a6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.cancel-button:hover {
+  background: #7f8c8d;
+}
+
+/* 🆕 Métricas de Recoloración */
+.recolor-metrics {
+  margin-top: 20px;
+  padding: 20px;
+  background: #fff3cd;
+  border-radius: 8px;
+  border-left: 4px solid #ffc107;
+}
+
+.recolor-metrics h3 {
+  color: #856404;
+  margin-bottom: 15px;
+  border-bottom: none;
+}
+
+.affected-nodes {
+  margin-top: 15px;
+  padding: 10px;
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid #ffeaa7;
+}
+
+.affected-nodes p {
+  margin: 0;
+  color: #856404;
+  font-size: 14px;
+}
+
+/* 🆕 ESTILOS PARA LA GRÁFICA DE CONFLICTOS */
+.conflict-chart {
+  margin-top: 30px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.conflict-chart h3 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+}
+
+.chart-container {
+  margin-bottom: 20px;
+}
+
+.chart-placeholder {
+  text-align: center;
+  color: #7f8c8d;
+  padding: 40px 20px;
+  border: 2px dashed #bdc3c7;
+  border-radius: 8px;
+  background: #f8f9fa;
+}
+
+.chart-placeholder p {
+  margin: 10px 0;
+}
+
+.chart-stats {
+  margin-top: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.chart-stats h4 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.chart-stats .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.chart-stats .stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.chart-stats .stat-item span {
+  color: #495057;
+  font-size: 14px;
+}
+
+.chart-stats .stat-item strong {
+  color: #2c3e50;
+}
+
+/* 🆕 ESTILOS PARA INFORMACIÓN DEL GRAFO */
+.graph-info {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #34495e;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.graph-info h3 {
+  color: #ecf0f1;
+  margin-bottom: 10px;
+  border-bottom: none;
+}
+
+.info-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  font-size: 14px;
+  color: #bdc3c7;
+}
+
+.info-item span:first-child {
+  color: #ecf0f1;
+}
+
+.info-warning {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+  padding: 8px;
+  background: #f39c12;
+  color: white;
+  border-radius: 4px;
+  font-size: 12px;
+  text-align: center;
 }
 
 /* Responsive */
@@ -294,5 +517,12 @@ h3 {
     width: 100%;
     height: auto;
   }
+  
+  .color-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
 }
-
