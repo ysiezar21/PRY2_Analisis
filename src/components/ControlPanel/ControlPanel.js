@@ -7,13 +7,13 @@ const ControlPanel = ({
   onConfigChange, 
   onRunAlgorithm, 
   isRunning,
-  // Agregar estas nuevas props
   onAddNode,
   onConnectNodes, 
   onGenerateRandom,
   onClearGraph,
   mode,
-  onModeChange 
+  onModeChange,
+  infoGrafo // 🆕 Nueva prop
 }) => {
   const handleInputChange = (field, value) => {
     onConfigChange({
@@ -26,6 +26,36 @@ const ControlPanel = ({
     <div className="control-panel">
       <h2>Configuración del Grafo</h2>
       
+      {/* 🆕 INFORMACIÓN DEL GRAFO ACTUAL */}
+      {infoGrafo && infoGrafo.totalNodos > 0 && (
+        <div className="graph-info">
+          <h3>📊 Grafo Actual</h3>
+          <div className="info-stats">
+            <div className="info-item">
+              <span>Nodos: </span>
+              <strong>{infoGrafo.totalNodos}/{config.nodeCount}</strong>
+            </div>
+            <div className="info-item">
+              <span>Manuales: </span>
+              <span>{infoGrafo.nodosManuales}</span>
+            </div>
+            <div className="info-item">
+              <span>Automáticos: </span>
+              <span>{infoGrafo.nodosAutomaticos}</span>
+            </div>
+            <div className="info-item">
+              <span>Aristas: </span>
+              <span>{infoGrafo.totalAristas}</span>
+            </div>
+            {infoGrafo.necesitaCompletar && (
+              <div className="info-warning">
+                ⚠️ Se agregarán {config.nodeCount - infoGrafo.totalNodos} nodos automáticamente
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="config-section">
         <h3>Parámetros del Grafo</h3>
         
@@ -75,6 +105,7 @@ const ControlPanel = ({
         onClearGraph={onClearGraph}
         mode={mode}
         onModeChange={onModeChange}
+        tieneGrafo={infoGrafo?.totalNodos > 0} // 🆕 Nueva prop
       />
     </div>
   );
