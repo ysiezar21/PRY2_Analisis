@@ -71,6 +71,7 @@ function monteCarlo(grafo, numeroMaximoDeColores = 3, iteraciones = 1000) {
   let grafoNuevo = grafo;
   let subColores = colores.slice(0, numeroMaximoDeColores);
   let frames = [];
+  let historialConflictos = []; // 🆕 Nuevo: historial de conflictos por iteración
 
   for (let i = 0; i < iteraciones; i++) {
     intentos++;
@@ -87,6 +88,13 @@ function monteCarlo(grafo, numeroMaximoDeColores = 3, iteraciones = 1000) {
     });
     conflictos /= 2;
 
+    // 🆕 Guardar en historial (sin alterar lógica)
+    historialConflictos.push({
+      iteracion: i,
+      conflictos: conflictos,
+      esMejor: conflictos < mejoresConflictos
+    });
+
     // Guardamos un frame de esta iteración
     frames.push(copiarGrafo(grafo));
 
@@ -99,7 +107,11 @@ function monteCarlo(grafo, numeroMaximoDeColores = 3, iteraciones = 1000) {
   }
 
   console.log(`Iteraciones: ${iteraciones}, Mejor número de conflictos: ${mejoresConflictos}`);
-  return { grafo: grafoNuevo, frames };
+  return { 
+    grafo: grafoNuevo, 
+    frames,
+    historialConflictos // � Nuevo: retornar historial
+  };
 }
 
 function lasVegas(grafo, numeroMaximoDeColores = 3) {
@@ -107,6 +119,7 @@ function lasVegas(grafo, numeroMaximoDeColores = 3) {
   let subColores = colores.slice(0, numeroMaximoDeColores);
   let cantColoresAumentados = 0;
   let frames = [];
+  let historialConflictos = []; // 🆕 Nuevo: historial de conflictos por iteración
 
   while (true) {
     intentos++;
@@ -137,9 +150,20 @@ function lasVegas(grafo, numeroMaximoDeColores = 3) {
     });
     conflictos /= 2;
 
+    // 🆕 Guardar en historial (sin alterar lógica)
+    historialConflictos.push({
+      iteracion: intentos - 1, // -1 porque empezamos en 0
+      conflictos: conflictos,
+      coloresUtilizados: numeroMaximoDeColores + cantColoresAumentados
+    });
+
     if (conflictos === 0) {
       console.log(`Solución encontrada en ${intentos} intentos`);
-      return { grafo, frames };
+      return { 
+        grafo, 
+        frames,
+        historialConflictos // 🆕 Nuevo: retornar historial
+      };
     }
   }
 }
