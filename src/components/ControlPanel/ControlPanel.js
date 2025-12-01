@@ -1,7 +1,7 @@
 import React from 'react';
 import AlgorithmControls from '../AlgorithmControls/AlgorithmControls';
 import GraphControls from '../GraphControls/GraphControls';
-import { setAumentosFlag } from '../../backend/Algoritmos'; 
+import { setAumentosFlag, setTiempoEspera } from '../../backend/Algoritmos'; 
 
 const ControlPanel = ({ 
   config, 
@@ -93,17 +93,35 @@ const ControlPanel = ({
               // Actualiza la config
               handleInputChange('autoIncreaseColors', checked);
 
-              // 👉 Si se activa
+              
               if (checked) {
                 setAumentosFlag(true)      // función cuando se activa
               } 
-              // 👉 Si se desactiva
+              
               else {
                 setAumentosFlag(false)   // función cuando se desactiva
               }
             }}
           />
         </div>
+        <div className="input-group">
+          <label>Tiempo de espera (ms):</label>
+
+          <input
+            type="range"
+            min="0"
+            max="1000"
+            value={config.tiempoEspera ?? 0}
+            onChange={(e) => {
+              const value = parseInt(e.target.value);
+              handleInputChange("tiempoEspera", value);
+              setTiempoEspera(value);   
+            }}
+          />
+
+          <span>{config.tiempoEspera ?? 0} ms</span>
+        </div>
+
       </div>
 
       <AlgorithmControls 

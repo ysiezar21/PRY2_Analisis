@@ -70,6 +70,7 @@ const GraphVisualizer = ({
     }
   };
 
+
   // Paleta de colores predefinida
   const colorPalette = [
     "#FF0000", "#0000FF", "#00FF00", "#FFFF00", "#FFA500",
@@ -134,25 +135,26 @@ const GraphVisualizer = ({
     );
   };
 
-  // 🆕 CORREGIDO: Siempre renderizar el SVG, incluso cuando está vacío
+  // Siempre renderizar el SVG, incluso cuando está vacío
   const renderGrafo = () => {
     return (
       <div className="graph-container">
         <svg 
           ref={svgRef}
           width="100%" 
-          height="500" 
-          viewBox="0 0 600 500"
+          height="700"
+          viewBox="0 0 1000 1000"
           onClick={handleSvgClick}
           style={{ 
             cursor: mode === 'addNode' ? 'crosshair' : 
-                   mode === 'connect' ? 'pointer' : 'default',
+                    mode === 'connect' ? 'pointer' : 'default',
             border: '2px dashed #bdc3c7',
             borderRadius: '8px',
             backgroundColor: '#f8f9fa',
             minHeight: '300px'
           }}
         >
+
           {/* Renderizar aristas con conflictos */}
           {aristasConConflictos.map((arista, index) => (
             <line
@@ -198,7 +200,7 @@ const GraphVisualizer = ({
             </g>
           ))}
           
-          {/* 🆕 Mensaje cuando no hay nodos */}
+          {/* Mensaje cuando no hay nodos */}
           {localGraph.nodos.length === 0 && (
             <text x="300" y="250" textAnchor="middle" fill="#7f8c8d" fontSize="16">
               Haz clic para agregar nodos
@@ -259,6 +261,8 @@ const GraphVisualizer = ({
               <label>Tiempo:</label>
               <span>{stats.tiempo}</span>
             </div>
+
+
             <div className="stat-item">
               <label>Estado:</label>
               <span className={stats.exito ? 'success' : 'error'}>

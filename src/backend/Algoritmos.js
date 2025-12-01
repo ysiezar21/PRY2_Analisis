@@ -205,6 +205,6 @@ function lasVegas(grafo, numeroMaximoDeColores = 3) {
   }
 }
 
-export { monteCarlo, lasVegas};
+export { monteCarlo, lasVegas };
 
 

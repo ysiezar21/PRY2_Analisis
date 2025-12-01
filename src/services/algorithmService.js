@@ -1,5 +1,5 @@
 import { grafo } from '../backend/grafo.js';
-import { monteCarlo, lasVegas } from '../backend/Algoritmos.js';
+import { monteCarlo, lasVegas, getTiempoEspera,setTiempoEspera } from '../backend/Algoritmos.js';
 
 class AlgorithmService {
   
@@ -27,7 +27,7 @@ class AlgorithmService {
         this.convertirGrafoParaVisualizacionFrame(resultado.frames[i]),
         resultado.historialConflictos && resultado.historialConflictos[i] // 🆕 Pasar datos de conflicto
       );
-      await new Promise(resolve => setTimeout(resolve, 1));
+      await new Promise(resolve => setTimeout(resolve, getTiempoEspera()));
     }
     
     const endTime = performance.now();
@@ -56,17 +56,17 @@ class AlgorithmService {
         conflictos: 'N/A',
         exito: false,
         error: 'No se pudo encontrar solución',
-        historialConflictos: [] // 🆕 Nuevo: historial vacío
+        historialConflictos: [] // Nuevo: historial vacío
       };
     }
 
-    // 🆕 Reproducir frames con historial de conflictos
+    //  Reproducir frames con historial de conflictos
     for (let i = 0; i < resultado.frames.length; i++) {
       onFrame(
         this.convertirGrafoParaVisualizacionFrame(resultado.frames[i]),
         resultado.historialConflictos && resultado.historialConflictos[i] // 🆕 Pasar datos de conflicto
       );
-      await new Promise(resolve => setTimeout(resolve, 1));
+      await new Promise(resolve => setTimeout(resolve, getTiempoEspera()));
     }
     
     const endTime = performance.now();
@@ -112,65 +112,80 @@ class AlgorithmService {
   }
 
   convertirGrafoParaVisualizacion(grafo) {
-    if (!grafo || !grafo.nodos) {
-      return { nodos: [], aristas: [] };
-    }
+  if (!grafo || !grafo.nodos) {
+    return { nodos: [], aristas: [] };
+  }
 
-    const nodos = grafo.nodos.map((nodo, index) => ({
+  const total = grafo.nodos.length;
+  const centerX = 400;
+  const centerY = 300;
+  const radius = 250;
+
+  const nodos = grafo.nodos.map((nodo, index) => {
+    const angle = (2 * Math.PI * index) / total;
+    return {
       id: index,
       color: nodo.color || '#CCCCCC',
-      x: Math.random() * 500 + 50,
-      y: Math.random() * 400 + 50
-    }));
+      x: centerX + radius * Math.cos(angle),
+      y: centerY + radius * Math.sin(angle)
+    };
+  });
 
-    const aristas = [];
-    grafo.nodos.forEach((nodo, index) => {
-      if (nodo.vecinos) {
-        nodo.vecinos.forEach(vecino => {
-          const targetIndex = grafo.nodos.indexOf(vecino);
-          if (targetIndex > index && targetIndex !== -1) {
-            aristas.push({
-              source: index,
-              target: targetIndex,
-              tieneConflicto: nodo.color === vecino.color
-            });
-          }
-        });
-      }
-    });
-
-    return { nodos, aristas };
-  }
-
-  convertirGrafoParaVisualizacionFrame(frame) {
-    if (!frame || !frame.nodos) {
-      return { nodos: [], aristas: [] };
+  const aristas = [];
+  grafo.nodos.forEach((nodo, index) => {
+    if (nodo.vecinos) {
+      nodo.vecinos.forEach(vecino => {
+        const targetIndex = grafo.nodos.indexOf(vecino);
+        if (targetIndex > index && targetIndex !== -1) {
+          aristas.push({
+            source: index,
+            target: targetIndex,
+            tieneConflicto: nodo.color === vecino.color
+          });
+        }
+      });
     }
+  });
 
-    const nodos = frame.nodos.map(n => ({
-      id: n.id,
-      color: n.color,
-      x: Math.random() * 500 + 50,
-      y: Math.random() * 400 + 50
-    }));
-
-    const aristas = [];
-    frame.nodos.forEach((nodo, index) => {
-      if (nodo.vecinos) {
-        nodo.vecinos.forEach(targetIndex => {
-          if (targetIndex > index && frame.nodos[targetIndex]) {
-            aristas.push({
-              source: index,
-              target: targetIndex,
-              tieneConflicto: nodo.color === frame.nodos[targetIndex].color
-            });
-          }
-        });
-      }
-    });
-
-    return { nodos, aristas };
-  }
+  return { nodos, aristas };
 }
 
+  convertirGrafoParaVisualizacionFrame(frame) {
+  if (!frame || !frame.nodos) {
+    return { nodos: [], aristas: [] };
+  }
+
+  const total = frame.nodos.length;
+  const centerX = 450;
+  const centerY = 450;
+  const radius = 400;
+
+  const nodos = frame.nodos.map((n, index) => {
+    const angle = (2 * Math.PI * index) / total;
+    return {
+      id: n.id,
+      color: n.color,
+      x: centerX + radius * Math.cos(angle),
+      y: centerY + radius * Math.sin(angle)
+    };
+  });
+
+  const aristas = [];
+  frame.nodos.forEach((nodo, index) => {
+    if (nodo.vecinos) {
+      nodo.vecinos.forEach(targetIndex => {
+        if (targetIndex > index && frame.nodos[targetIndex]) {
+          aristas.push({
+            source: index,
+            target: targetIndex,
+            tieneConflicto: nodo.color === frame.nodos[targetIndex].color
+          });
+        }
+      });
+    }
+  });
+
+  return { nodos, aristas };
+}
+}
 export default new AlgorithmService();
