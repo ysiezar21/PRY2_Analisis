@@ -106,7 +106,6 @@ function monteCarlo(grafo, numeroMaximoDeColores = 3, iteraciones = 1000) {
       grafo.ActualizarColoresUsados(subColores);
     }
 
-    }
     grafo.nodos.forEach(nodo => {
       const indice = Math.floor(Math.random() * numeroMaximoDeColores);
       nodo.cambiarColor(subColores[indice]);
