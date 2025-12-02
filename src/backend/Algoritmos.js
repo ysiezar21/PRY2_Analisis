@@ -1,4 +1,4 @@
-import { grafo, nodo } from './grafo.js';
+import './grafo.js';
 
 const colores = [
   "#FF0000", // rojo
