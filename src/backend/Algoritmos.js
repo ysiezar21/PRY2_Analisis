@@ -1,4 +1,4 @@
-import { 'grafo', 'nodo' } from './grafo.js';
+import { "grafo", "nodo" } from './grafo.js';
 export { monteCarlo, lasVegas };
 
 const colores = [
