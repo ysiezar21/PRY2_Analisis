@@ -58,16 +58,16 @@ let aumentosFlag = false;
 
 export function setTiempoEspera(tiempo) {
   tiempoEspera = tiempo; 
-}
+};
 export function getTiempoEspera() {
   return tiempoEspera;
-}
+};
 export function setAumentosFlag(bandera) {
   aumentosFlag = bandera; 
-}
+};
 export function getAumentosFlag() { 
   return aumentosFlag; 
-}
+};
 
 function copiarGrafo(g) {
   return {
@@ -79,7 +79,7 @@ function copiarGrafo(g) {
     intentos: g.intentos,
     numeroConflictos: g.numeroConflictos
   };
-}
+};
 
 function monteCarlo(grafo, numeroMaximoDeColores = 3, iteraciones = 1000) {
   let mejoresConflictos = Infinity;
@@ -133,6 +133,7 @@ function monteCarlo(grafo, numeroMaximoDeColores = 3, iteraciones = 1000) {
       mejorFrame = copiarGrafo(grafoNuevo);
     }
   
+  };
   console.log(`Iteraciones: ${iteraciones}, Mejor número de conflictos: ${mejoresConflictos}`);
   grafo= grafoNuevo;
   grafo.intentos = intentos;
@@ -144,7 +145,7 @@ function monteCarlo(grafo, numeroMaximoDeColores = 3, iteraciones = 1000) {
     frames,
     historialConflictos 
   };
-}
+};
 
 function lasVegas(grafo, numeroMaximoDeColores = 3) {
   let intentos = 0;
@@ -201,6 +202,6 @@ function lasVegas(grafo, numeroMaximoDeColores = 3) {
         frames,
         historialConflictos 
       };
-    }
-  }
+    };
+  };
 };
