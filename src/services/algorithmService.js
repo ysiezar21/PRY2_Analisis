@@ -1,5 +1,5 @@
 import { grafo } from '../backend/grafo.js';
-import { monteCarlo, lasVegas, getTiempoEspera,setTiempoEspera } from '../backend/Algoritmos.js';
+import { monteCarlo, lasVegas, getTiempoEspera} from '../backend/Algoritmos.js';
 
 class AlgorithmService {
   
@@ -151,43 +151,42 @@ class AlgorithmService {
 }
 
   convertirGrafoParaVisualizacionFrame(frame) {
-    if (!frame || !frame.nodos) {
-      return { nodos: [], aristas: [] };
-    }
-  
-    const total = frame.nodos.length;
-    const centerX = 450;
-    const centerY = 450;
-    const radius = 400;
-  
-    const nodos = frame.nodos.map((n, index) => {
-      const angle = (2 * Math.PI * index) / total;
-      return {
-        id: n.id,
-        color: n.color,
-        x: centerX + radius * Math.cos(angle),
-        y: centerY + radius * Math.sin(angle)
-      };
-    });
-  
-    const aristas = [];
-    frame.nodos.forEach((nodo, index) => {
-      if (nodo.vecinos) {
-        nodo.vecinos.forEach(targetIndex => {
-          if (targetIndex > index && frame.nodos[targetIndex]) {
-            aristas.push({
-              source: index,
-              target: targetIndex,
-              tieneConflicto: nodo.color === frame.nodos[targetIndex].color
-            });
-          }
-        });
-      }
-    });
-  
-    return { nodos, aristas };
-  };
-};
+  if (!frame || !frame.nodos) {
+    return { nodos: [], aristas: [] };
+  }
 
+  const total = frame.nodos.length;
+  const centerX = 450;
+  const centerY = 450;
+  const radius = 400;
+
+  const nodos = frame.nodos.map((n, index) => {
+    const angle = (2 * Math.PI * index) / total;
+    return {
+      id: n.id,
+      color: n.color,
+      x: centerX + radius * Math.cos(angle),
+      y: centerY + radius * Math.sin(angle)
+    };
+  });
+
+  const aristas = [];
+  frame.nodos.forEach((nodo, index) => {
+    if (nodo.vecinos) {
+      nodo.vecinos.forEach(targetIndex => {
+        if (targetIndex > index && frame.nodos[targetIndex]) {
+          aristas.push({
+            source: index,
+            target: targetIndex,
+            tieneConflicto: nodo.color === frame.nodos[targetIndex].color
+          });
+        }
+      });
+    }
+  });
+
+  return { nodos, aristas };
+}
+}
 const algorithmService = new AlgorithmService();
 export default algorithmService;
