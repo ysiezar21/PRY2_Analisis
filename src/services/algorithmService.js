@@ -188,4 +188,5 @@ class AlgorithmService {
   return { nodos, aristas };
 }
 }
-export default new AlgorithmService();
+const algorithmService = new AlgorithmService();
+export default algorithmService;
