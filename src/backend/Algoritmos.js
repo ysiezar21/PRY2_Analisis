@@ -1,4 +1,5 @@
 import { grafo, nodo } from './grafo.js';
+export { monteCarlo, lasVegas };
 
 const colores = [
   "#FF0000", // rojo
@@ -203,7 +204,4 @@ function lasVegas(grafo, numeroMaximoDeColores = 3) {
     }
   }
 }
-
-export { monteCarlo, lasVegas };
-
 
