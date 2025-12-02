@@ -106,9 +106,12 @@ function monteCarlo(grafo, numeroMaximoDeColores = 3, iteraciones = 1000) {
       grafo.ActualizarColoresUsados(subColores);
     }
 
+    const coloresLocales = subColores;
+    const maxLocal = numeroMaximoDeColores;
+    
     grafo.nodos.forEach(nodo => {
-      const indice = Math.floor(Math.random() * (numeroMaximoDeColores-1));
-      nodo.cambiarColor(subColores[indice]);
+      const indice = Math.floor(Math.random() * maxLocal);
+      nodo.cambiarColor(coloresLocales[indice]);
     });
 
     let conflictos = grafo.obtenerConflictos();
@@ -171,10 +174,13 @@ function lasVegas(grafo, numeroMaximoDeColores = 3) {
       }
 
     }
+
+    const coloresLocales = subColores; 
+    const maxLocalVegas = numeroMaximoDeColores + cantColoresAumentados;
     
     grafo.nodos.forEach(nodo => {
-      const indice = Math.floor(Math.random() * (numeroMaximoDeColores - 1 + cantColoresAumentados));
-      nodo.cambiarColor(subColores[indice]);
+      const indice = Math.floor(Math.random() * maxLocalVegas);
+      nodo.cambiarColor(coloresLocales[indice]);
     });
 
     // Guardamos un frame de esta iteración
