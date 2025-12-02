@@ -94,7 +94,8 @@ function monteCarlo(grafo, numeroMaximoDeColores = 3, iteraciones = 1000) {
     intentos++;
     if (aumentosFlag){
       if (intentos % 1000 === 0) {
-      cantColoresAumentados++;
+        cantColoresAumentados++;
+      }
       if (cantColoresAumentados + numeroMaximoDeColores > colores.length) {
         console.log("No se pudo encontrar una solución con los colores disponibles.");
         return null; 
