@@ -1,4 +1,3 @@
-export { grafo, nodo };
 
 class nodo {
     constructor(color = null) { 
@@ -116,3 +115,5 @@ class grafo {
         }
     }
 };
+
+export { grafo, nodo };
