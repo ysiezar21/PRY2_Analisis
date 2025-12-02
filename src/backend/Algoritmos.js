@@ -132,8 +132,7 @@ function monteCarlo(grafo, numeroMaximoDeColores = 3, iteraciones = 1000) {
       grafoNuevo.ActualizarColoresUsados(subColores);
       mejorFrame = copiarGrafo(grafoNuevo);
     }
-  }
-
+  
   console.log(`Iteraciones: ${iteraciones}, Mejor número de conflictos: ${mejoresConflictos}`);
   grafo= grafoNuevo;
   grafo.intentos = intentos;
