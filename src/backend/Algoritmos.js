@@ -203,5 +203,4 @@ function lasVegas(grafo, numeroMaximoDeColores = 3) {
       };
     }
   }
-}
-
+};
