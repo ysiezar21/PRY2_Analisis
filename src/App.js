@@ -133,7 +133,6 @@ function App() {
 
   // 🆕 FUNCIÓN PARA CALCULAR MÉTRICAS DE RECOLORACIÓN
   const calcularMetricasRecoloracion = (nodeId, newColor, updatedGraph) => {
-    const nodoRecolorado = updatedGraph.nodos[nodeId];
     let nuevosConflictos = 0;
     let nodosAfectados = new Set();
     

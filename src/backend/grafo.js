@@ -1,3 +1,4 @@
+
 class nodo {
     constructor(color = null) { 
         this.color = color;
@@ -113,6 +114,6 @@ class grafo {
             }
         }
     }
-}
+};
 
 export { grafo, nodo };
