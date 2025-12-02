@@ -87,7 +87,7 @@ function monteCarlo(grafo, numeroMaximoDeColores = 3, iteraciones = 1000) {
   let subColores = colores.slice(0, numeroMaximoDeColores);
   let frames = [];
   let mejorFrame = null;
-  let historialConflictos = []; 
+  let historialConflictos = [];
   let cantColoresAumentados = 0;
 
   for (let i = 0; i < iteraciones; i++) {
@@ -100,14 +100,14 @@ function monteCarlo(grafo, numeroMaximoDeColores = 3, iteraciones = 1000) {
       if (cantColoresAumentados + numeroMaximoDeColores > colores.length) {
         console.log("No se pudo encontrar una solución con los colores disponibles.");
         return null; 
-      } 
+      }
       grafo.agregarCantidadColoresAumentado(cantColoresAumentados);
       console.log(`Aumentando número de colores a ${numeroMaximoDeColores + cantColoresAumentados}`);
       grafo.ActualizarColoresUsados(subColores);
     }
 
     grafo.nodos.forEach(nodo => {
-      const indice = Math.floor(Math.random() * numeroMaximoDeColores);
+      const indice = Math.floor(Math.random() * (numeroMaximoDeColores-1));
       nodo.cambiarColor(subColores[indice]);
     });
 
@@ -173,7 +173,7 @@ function lasVegas(grafo, numeroMaximoDeColores = 3) {
     }
     
     grafo.nodos.forEach(nodo => {
-      const indice = Math.floor(Math.random() * (numeroMaximoDeColores + cantColoresAumentados));
+      const indice = Math.floor(Math.random() * (numeroMaximoDeColores - 1 + cantColoresAumentados));
       nodo.cambiarColor(subColores[indice]);
     });
 
