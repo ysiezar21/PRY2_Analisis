@@ -93,6 +93,7 @@ function monteCarlo(grafo, numeroMaximoDeColores = 3, iteraciones = 1000) {
 
   for (let i = 0; i < iteraciones; i++) {
     intentos++;
+    subColores = colores.slice(0, numeroMaximoDeColores + cantColoresAumentados);
     if (aumentosFlag){
       if (intentos % 1000 === 0) {
         cantColoresAumentados++;
@@ -101,7 +102,6 @@ function monteCarlo(grafo, numeroMaximoDeColores = 3, iteraciones = 1000) {
         console.log("No se pudo encontrar una solución con los colores disponibles.");
         return null; 
       } 
-      subColores = colores.slice(0, numeroMaximoDeColores + cantColoresAumentados);
       grafo.agregarCantidadColoresAumentado(cantColoresAumentados);
       console.log(`Aumentando número de colores a ${numeroMaximoDeColores + cantColoresAumentados}`);
       grafo.ActualizarColoresUsados(subColores);
@@ -157,18 +157,19 @@ function lasVegas(grafo, numeroMaximoDeColores = 3) {
   while (true) {
     intentos++;
     grafo.intentos = intentos;
+    subColores = colores.slice(0, numeroMaximoDeColores + cantColoresAumentados);
     if (aumentosFlag){
       if (intentos % 1000 === 0) {
-      cantColoresAumentados++;
-      if (cantColoresAumentados + numeroMaximoDeColores > colores.length) {
-        console.log("No se pudo encontrar una solución con los colores disponibles.");
-        return null; 
-      } 
-      subColores = colores.slice(0, numeroMaximoDeColores + cantColoresAumentados);
-      grafo.agregarCantidadColoresAumentado(cantColoresAumentados);
-      console.log(`Aumentando número de colores a ${numeroMaximoDeColores + cantColoresAumentados}`);
-      grafo.ActualizarColoresUsados(subColores);
-    }
+        cantColoresAumentados++;
+        if (cantColoresAumentados + numeroMaximoDeColores > colores.length) {
+          console.log("No se pudo encontrar una solución con los colores disponibles.");
+          return null; 
+        } 
+        
+        grafo.agregarCantidadColoresAumentado(cantColoresAumentados);
+        console.log(`Aumentando número de colores a ${numeroMaximoDeColores + cantColoresAumentados}`);
+        grafo.ActualizarColoresUsados(subColores);
+      }
 
     }
     
