@@ -1,5 +1,5 @@
-import { grafo } from '../backend/grafo.js';
-import { monteCarlo, lasVegas, getTiempoEspera,setTiempoEspera } from '../backend/Algoritmos.js';
+import '../backend/grafo.js';
+import '../backend/Algoritmos.js';
 
 class AlgorithmService {
   
