@@ -26,19 +26,9 @@ const GraphVisualizer = ({
     }
   }, [graphData]);
 
-  // 🆕 CORREGIDO: Manejar clic en el SVG - cálculo correcto de coordenadas
+  // 🆕 ACTUALIZADO: Manejar clic en el SVG
   const handleSvgClick = (event) => {
-    if (mode === 'addNode') {
-      const svg = svgRef.current;
-      const pt = svg.createSVGPoint();
-      pt.x = event.clientX;
-      pt.y = event.clientY;
-      const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
-      
-      console.log(`Agregando nodo en posición: ${svgP.x}, ${svgP.y}`);
-      onAddNode(svgP.x, svgP.y);
-    }
-    
+    // 🆕 ELIMINADO: Modo 'addNode' ya que ahora se usa botón "Agregar Nodo Manual"
     // Cerrar color picker si se hace clic fuera
     if (showColorPicker) {
       setShowColorPicker(false);
@@ -69,7 +59,6 @@ const GraphVisualizer = ({
       setSelectedNode(null);
     }
   };
-
 
   // Paleta de colores predefinida
   const colorPalette = [
@@ -143,11 +132,10 @@ const GraphVisualizer = ({
           ref={svgRef}
           width="100%" 
           height="700"
-          viewBox="0 0 1000 1000"
+          viewBox="0 0 1200 1200"
           onClick={handleSvgClick}
           style={{ 
-            cursor: mode === 'addNode' ? 'crosshair' : 
-                    mode === 'connect' ? 'pointer' : 'default',
+            cursor: mode === 'connect' ? 'pointer' : 'default',
             border: '2px dashed #bdc3c7',
             borderRadius: '8px',
             backgroundColor: '#f8f9fa',
@@ -182,7 +170,7 @@ const GraphVisualizer = ({
             >
               <circle
                 r="20"
-                fill={nodo.color || '#3498db'}
+                fill={nodo.color || null}
                 stroke={selectedNodes.includes(nodo.id) || selectedNode === nodo.id ? "#e74c3c" : "#2c3e50"}
                 strokeWidth={selectedNodes.includes(nodo.id) || selectedNode === nodo.id ? 3 : 2}
                 className="node"
@@ -202,20 +190,17 @@ const GraphVisualizer = ({
           
           {/* Mensaje cuando no hay nodos */}
           {localGraph.nodos.length === 0 && (
-            <text x="300" y="250" textAnchor="middle" fill="#7f8c8d" fontSize="16">
-              Haz clic para agregar nodos
+            <text x="600" y="600" textAnchor="middle" fill="#7f8c8d" fontSize="16">
+              Crea un grafo!
             </text>
           )}
         </svg>
         
-        {/* 🆕 SELECTOR DE COLORES */}
+        {/*   SELECTOR DE COLORES */}
         <ColorPicker />
         
         {/* Información del modo actual */}
         <div className="mode-info">
-          {mode === 'addNode' && (
-            <p>🎯 <strong>Modo Agregar Nodos</strong> - Haz clic en el área para agregar nodos</p>
-          )}
           {mode === 'connect' && (
             <p>🔗 <strong>Modo Conectar</strong> - Selecciona dos nodos: {selectedNodes.join(', ')}</p>
           )}
@@ -228,7 +213,7 @@ const GraphVisualizer = ({
           {localGraph.nodos.length > 0 && (
             <p style={{ color: conflictosTotales > 0 ? '#e74c3c' : '#27ae60', fontWeight: 'bold' }}>
               ⚠️ <strong>Conflictos detectados:</strong> {conflictosTotales}
-              {conflictosTotales === 0 && ' ✅ Sin conflictos'}
+              {conflictosTotales === 0 && ' Sin conflictos'}
             </p>
           )}
         </div>
@@ -261,12 +246,19 @@ const GraphVisualizer = ({
               <label>Tiempo:</label>
               <span>{stats.tiempo}</span>
             </div>
-
+            
+            {/* 🆕 PORCENTAJE DE ÉXITO EN ESTADÍSTICAS NORMALES */}
+            <div className="stat-item">
+              <label>Porcentaje de éxito:</label>
+              <span className={stats.porcentajeExito >= 50 ? 'success' : stats.porcentajeExito > 0 ? 'conflict' : 'error'}>
+                {stats.porcentajeExito !== undefined ? `${stats.porcentajeExito}%` : 'N/A'}
+              </span>
+            </div>
 
             <div className="stat-item">
               <label>Estado:</label>
               <span className={stats.exito ? 'success' : 'error'}>
-                {stats.exito ? '✅ Éxito' : stats.error ? `❌ ${stats.error}` : '❌ Fallo'}
+                {stats.exito ? ' Éxito' : stats.error ? ` ${stats.error}` : ' Fallo'}
               </span>
             </div>
             {stats.coloresAumentados > 0 && (
