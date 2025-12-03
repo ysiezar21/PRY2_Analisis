@@ -1,5 +1,5 @@
 import { grafo } from '../backend/grafo.js';
-import { monteCarlo, lasVegas, getTiempoEspera,setTiempoEspera } from '../backend/Algoritmos.js';
+import { monteCarlo, lasVegas, getTiempoEspera} from '../backend/Algoritmos.js';
 
 class AlgorithmService {
   
@@ -188,4 +188,5 @@ class AlgorithmService {
   return { nodos, aristas };
 }
 }
-export default new AlgorithmService();
+const algorithmService = new AlgorithmService();
+export default algorithmService;
