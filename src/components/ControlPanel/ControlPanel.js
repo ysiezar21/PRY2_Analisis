@@ -16,6 +16,7 @@ const ControlPanel = ({
   onModeChange,
   infoGrafo 
 }) => {
+
   const handleInputChange = (field, value) => {
     onConfigChange({
       ...config,
@@ -26,8 +27,8 @@ const ControlPanel = ({
   return (
     <div className="control-panel">
       <h2>Configuración del Grafo</h2>
-      
-      {/*  INFORMACIÓN DEL GRAFO ACTUAL */}
+
+      {/* --- INFO DEL GRAFO --- */}
       {infoGrafo && infoGrafo.totalNodos > 2 && (
         <div className="graph-info">
           <h3> Grafo Actual</h3>
@@ -59,7 +60,7 @@ const ControlPanel = ({
 
       <div className="config-section">
         <h3>Parámetros del Grafo</h3>
-        
+
         <div className="input-group">
           <label>Número de Nodos:</label>
           <input 
@@ -82,6 +83,16 @@ const ControlPanel = ({
           />
         </div>
 
+        {/* ← NUEVO CAMPO */}
+        <div className="input-group">
+          <label>Generar aristas aleatorias:</label>
+          <input
+            type="checkbox"
+            checked={config.generarAleatorio}
+            onChange={(e) => handleInputChange('generarAleatorio', e.target.checked)}
+          />
+        </div>
+
         <div className="input-group">
           <label>Auto-incrementar colores:</label>
           <input
@@ -89,24 +100,15 @@ const ControlPanel = ({
             checked={config.autoIncreaseColors}
             onChange={(e) => {
               const checked = e.target.checked;
-
-              // Actualiza la config
               handleInputChange('autoIncreaseColors', checked);
 
-              
-              if (checked) {
-                setAumentosFlag(true)      // función cuando se activa
-              } 
-              
-              else {
-                setAumentosFlag(false)   // función cuando se desactiva
-              }
+              setAumentosFlag(checked);
             }}
           />
         </div>
+
         <div className="input-group">
           <label>Tiempo de espera (ms):</label>
-
           <input
             type="range"
             min="0"
@@ -118,10 +120,8 @@ const ControlPanel = ({
               setTiempoEspera(value);   
             }}
           />
-
           <span>{config.tiempoEspera ?? 0} ms</span>
         </div>
-
       </div>
 
       <AlgorithmControls 
@@ -138,7 +138,7 @@ const ControlPanel = ({
         onClearGraph={onClearGraph}
         mode={mode}
         onModeChange={onModeChange}
-        tieneGrafo={infoGrafo?.totalNodos > 0} 
+        tieneGrafo={infoGrafo?.totalNodos > 0}
       />
     </div>
   );

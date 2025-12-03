@@ -66,6 +66,37 @@ function App() {
     console.log(`Grafo completado: ${nodosFaltantes} nodos agregados automáticamente`);
     return nuevoGrafo;
   };
+  const generarGrafoParaAlgoritmo = () => {
+  const total = graphConfig.nodeCount;
+
+  // Crear nodos sin color
+  const nodos = Array.from({ length: total }, (_, i) => ({
+    id: i,
+    x: Math.random() * 500 + 50,
+    y: Math.random() * 400 + 50,
+    color: null
+  }));
+
+  let aristas = [];
+
+  // Si está seleccionada la opción aleatoria, generar aristas
+  if (graphConfig.generarAleatorio) {
+    const posiblesAristas = [];
+
+    for (let i = 0; i < total; i++) {
+      for (let j = i + 1; j < total; j++) {
+        if (Math.random() < 0.3) {
+          posiblesAristas.push({ source: i, target: j, tieneConflicto: false });
+        }
+      }
+    }
+
+    aristas = posiblesAristas;
+  }
+  //Modificar el grafo actual
+  
+  return { nodos, aristas };
+};
 
   // Manejar agregar nodo
   const handleAddNode = (x, y) => {
@@ -260,28 +291,30 @@ function App() {
   };
 
   // ACTUALIZADA: Manejar ejecución de algoritmo
-  const handleRunAlgorithm = async () => {
-    setIsRunning(true);
-    setExecutionStats(null);
-    setRecolorMetrics(null);
-    setConflictHistory([]);
+const handleRunAlgorithm = async () => {
+  setIsRunning(true);
+  setExecutionStats(null);
+  setRecolorMetrics(null);
+  setConflictHistory([]);
 
-    try {
-      // Preparar el grafo (usar actual o generar)
-      const grafoParaAlgoritmo = prepararGrafoParaAlgoritmo();
-      
-      const resultado = await algorithmService.ejecutarAlgoritmo(
-        {
-          ...graphConfig,
-          grafoExistente: grafoParaAlgoritmo // Pasar el grafo actual
-        },
-        (graphData, conflictData) => {
-          setGraphData(graphData);
-          if (conflictData) {
-            setConflictHistory(prev => [...prev, conflictData]);
-          }
+  try {
+    // SIEMPRE generar grafo nuevo sin colores
+    const grafoParaAlgoritmo = generarGrafoParaAlgoritmo(); //Hay que reemplazar por el grafo actual si existe y hacewr otro boton exclusivamente para llamar a la funcion generargrafoparaalgoritmo
+    setGraphData(grafoParaAlgoritmo);
+
+    const resultado = await algorithmService.ejecutarAlgoritmo(
+      {
+        ...graphConfig,
+        grafoExistente: grafoParaAlgoritmo
+      },
+      (graphData, conflictData) => {
+        setGraphData(graphData);
+        if (conflictData) {
+          setConflictHistory(prev => [...prev, conflictData]);
         }
-      );
+      }
+    );
+
 
       setExecutionStats({
         intentos: resultado.intentos,
