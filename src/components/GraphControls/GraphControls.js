@@ -44,7 +44,6 @@ const GraphControls = ({
         <label>Modo:</label>
         <select value={mode} onChange={(e) => handleModeChange(e.target.value)}>
           <option value="view">Visualización</option>
-          <option value="addNode">Agregar Nodos</option>
           <option value="connect">Conectar Nodos</option>
         </select>
       </div>
@@ -60,10 +59,10 @@ const GraphControls = ({
       
       <div className="mode-instructions">
         {mode === 'addNode' && (
-          <p>💡 Haz clic en el área del grafo para agregar nodos</p>
+          <p> Haz clic en el área del grafo para agregar nodos</p>
         )}
         {mode === 'connect' && (
-          <p>💡 Selecciona dos nodos para conectarlos</p>
+          <p> Selecciona dos nodos para conectarlos</p>
         )}
       </div>
     </div>

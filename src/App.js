@@ -23,7 +23,7 @@ function App() {
   const [recolorMetrics, setRecolorMetrics] = useState(null);
   const [conflictHistory, setConflictHistory] = useState([]);
 
-  // 🆕 FUNCIÓN PARA COMPLETAR GRAFO AUTOMÁTICAMENTE
+  // FUNCIÓN PARA COMPLETAR GRAFO AUTOMÁTICAMENTE
   const completarGrafo = (grafoActual, nodosRequeridos) => {
     if (grafoActual.nodos.length >= nodosRequeridos) {
       return grafoActual; // No necesita completar
@@ -39,11 +39,11 @@ function App() {
         id: nuevoId,
         x: Math.random() * 500 + 50,
         y: Math.random() * 400 + 50,
-        color: '#3498db'
+        color: null
       });
     }
 
-    // 🆕 Conectar nodos nuevos con los existentes (probabilísticamente)
+    // Conectar nodos nuevos con los existentes (probabilísticamente)
     for (let i = grafoActual.nodos.length; i < nuevoGrafo.nodos.length; i++) {
       for (let j = 0; j < nuevoGrafo.nodos.length; j++) {
         if (i !== j && Math.random() < 0.3) { // 30% de probabilidad de conexión
@@ -63,7 +63,7 @@ function App() {
       }
     }
 
-    console.log(`✅ Grafo completado: ${nodosFaltantes} nodos agregados automáticamente`);
+    console.log(`Grafo completado: ${nodosFaltantes} nodos agregados automáticamente`);
     return nuevoGrafo;
   };
 
@@ -77,13 +77,13 @@ function App() {
         x, 
         y, 
         color: '#3498db',
-        esManual: true // 🆕 Marcar como nodo manual
+        esManual: true // Marcar como nodo manual
       }],
       aristas: [...graphData.aristas]
     };
     
     setGraphData(newGraphData);
-    console.log(`➕ Nodo manual agregado: ${nuevoId} (${graphData.nodos.length + 1}/${graphConfig.nodeCount})`);
+    console.log(`Nodo manual agregado: ${nuevoId} (${graphData.nodos.length + 1}/${graphConfig.nodeCount})`);
   };
 
   // Manejar conectar nodos
@@ -98,7 +98,7 @@ function App() {
         source: node1, 
         target: node2, 
         tieneConflicto: false,
-        esManual: true // 🆕 Marcar como arista manual
+        esManual: true // Marcar como arista manual
       };
       
       const newGraphData = {
@@ -108,13 +108,13 @@ function App() {
       
       setGraphData(newGraphData);
       setSelectedNodes([]);
-      console.log(`🔗 Conexión manual: ${node1} ↔ ${node2}`);
+      console.log(`Conexión manual: ${node1} ↔ ${node2}`);
     } else {
       setSelectedNodes(newSelectedNodes);
     }
   };
 
-  // 🆕 FUNCIÓN PARA RECOLORAR NODO
+  // FUNCIÓN PARA RECOLORAR NODO
   const handleRecolorNode = (nodeId, newColor) => {
     console.log(`Recolorando nodo ${nodeId} a color: ${newColor}`);
     
@@ -131,7 +131,7 @@ function App() {
     }
   };
 
-  // 🆕 FUNCIÓN PARA CALCULAR MÉTRICAS DE RECOLORACIÓN
+  // FUNCIÓN PARA CALCULAR MÉTRICAS DE RECOLORACIÓN
   const calcularMetricasRecoloracion = (nodeId, newColor, updatedGraph) => {
     let nuevosConflictos = 0;
     let nodosAfectados = new Set();
@@ -162,7 +162,7 @@ function App() {
     setRecolorMetrics(metricas);
   };
 
-  // 🆕 FUNCIÓN TEMPORAL PARA CALCULAR PROBABILIDAD DE ÉXITO
+  // FUNCIÓN TEMPORAL PARA CALCULAR PROBABILIDAD DE ÉXITO
   const calcularProbabilidadExito = (grafo) => {
     const totalAristas = grafo.aristas.length;
     const conflictos = grafo.aristas.filter(arista => {
@@ -175,14 +175,14 @@ function App() {
     return Math.max(0, 100 - (conflictos / totalAristas) * 100).toFixed(1);
   };
 
-  // 🆕 ACTUALIZADA: Generar grafo aleatorio O usar el actual
+  // ACTUALIZADA: Generar grafo aleatorio O usar el actual
   const handleGenerateRandom = () => {
     let randomGraph;
     
     if (graphData.nodos.length > 0) {
-      // 🆕 Completar el grafo actual
+      // Completar el grafo actual
       randomGraph = completarGrafo(graphData, graphConfig.nodeCount);
-      console.log("🔄 Grafo actual completado automáticamente");
+      console.log("Grafo actual completado automáticamente");
     } else {
       // Generar grafo completamente nuevo
       randomGraph = {
@@ -190,7 +190,7 @@ function App() {
           id: i,
           x: Math.random() * 500 + 50,
           y: Math.random() * 400 + 50,
-          color: '#3498db'
+          color: null
         })),
         aristas: []
       };
@@ -217,7 +217,7 @@ function App() {
           });
         }
       }
-      console.log("🎲 Nuevo grafo aleatorio generado");
+      console.log("Nuevo grafo aleatorio generado");
     }
     
     setGraphData(randomGraph);
@@ -238,10 +238,10 @@ function App() {
     setExecutionStats(null);
     setRecolorMetrics(null);
     setConflictHistory([]);
-    console.log("🗑️ Grafo limpiado completamente");
+    console.log("Grafo limpiado completamente");
   };
 
-  // 🆕 ACTUALIZADA: Preparar grafo para algoritmo
+  // ACTUALIZADA: Preparar grafo para algoritmo
   const prepararGrafoParaAlgoritmo = () => {
     if (graphData.nodos.length === 0) {
       // Si no hay grafo, generar uno automáticamente
@@ -249,7 +249,7 @@ function App() {
       return graphData; // Retornará el nuevo grafo en el siguiente render
     }
     
-    // 🆕 Completar el grafo actual si es necesario
+    // Completar el grafo actual si es necesario
     if (graphData.nodos.length < graphConfig.nodeCount) {
       const grafoCompletado = completarGrafo(graphData, graphConfig.nodeCount);
       setGraphData(grafoCompletado);
@@ -259,7 +259,7 @@ function App() {
     return graphData;
   };
 
-  // 🆕 ACTUALIZADA: Manejar ejecución de algoritmo
+  // ACTUALIZADA: Manejar ejecución de algoritmo
   const handleRunAlgorithm = async () => {
     setIsRunning(true);
     setExecutionStats(null);
@@ -267,13 +267,13 @@ function App() {
     setConflictHistory([]);
 
     try {
-      // 🆕 Preparar el grafo (usar actual o generar)
+      // Preparar el grafo (usar actual o generar)
       const grafoParaAlgoritmo = prepararGrafoParaAlgoritmo();
       
       const resultado = await algorithmService.ejecutarAlgoritmo(
         {
           ...graphConfig,
-          grafoExistente: grafoParaAlgoritmo // 🆕 Pasar el grafo actual
+          grafoExistente: grafoParaAlgoritmo // Pasar el grafo actual
         },
         (graphData, conflictData) => {
           setGraphData(graphData);
@@ -293,7 +293,7 @@ function App() {
         historialConflictos: resultado.historialConflictos || []
       });
 
-      console.log(`✅ Algoritmo ejecutado sobre grafo con ${grafoParaAlgoritmo.nodos.length} nodos`);
+      console.log(`Algoritmo ejecutado sobre grafo con ${grafoParaAlgoritmo.nodos.length} nodos`);
 
     } catch (error) {
       console.error('Error:', error);
@@ -310,13 +310,13 @@ function App() {
   const handleConfigChange = (newConfig) => {
     setGraphConfig(newConfig);
     setExecutionStats(null);
-    // 🆕 NO limpiar el grafo aquí, mantener el trabajo del usuario
+    // NO limpiar el grafo aquí, mantener el trabajo del usuario
     setSelectedNodes([]);
     setRecolorMetrics(null);
     setConflictHistory([]);
   };
 
-  // 🆕 INFORMACIÓN DEL GRAFO ACTUAL
+  // INFORMACIÓN DEL GRAFO ACTUAL
   const infoGrafoActual = () => {
     const nodosManuales = graphData.nodos.filter(n => n.esManual).length;
     const aristasManuales = graphData.aristas.filter(a => a.esManual).length;
@@ -346,7 +346,7 @@ function App() {
         onClearGraph={handleClearGraph}
         mode={mode}
         onModeChange={setMode}
-        infoGrafo={info} // 🆕 Pasar información del grafo
+        infoGrafo={info} // Pasar información del grafo
       />
       
       <div className="main-content">
@@ -360,7 +360,7 @@ function App() {
           mode={mode}
           selectedNodes={selectedNodes}
           recolorMetrics={recolorMetrics}
-          infoGrafo={info} // 🆕 Pasar información del grafo
+          infoGrafo={info} // Pasar información del grafo
         />
         
         <ConflictChart 

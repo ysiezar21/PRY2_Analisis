@@ -27,10 +27,10 @@ const ControlPanel = ({
     <div className="control-panel">
       <h2>Configuración del Grafo</h2>
       
-      {/* 🆕 INFORMACIÓN DEL GRAFO ACTUAL */}
-      {infoGrafo && infoGrafo.totalNodos > 0 && (
+      {/*  INFORMACIÓN DEL GRAFO ACTUAL */}
+      {infoGrafo && infoGrafo.totalNodos > 2 && (
         <div className="graph-info">
-          <h3>📊 Grafo Actual</h3>
+          <h3> Grafo Actual</h3>
           <div className="info-stats">
             <div className="info-item">
               <span>Nodos: </span>
@@ -50,7 +50,7 @@ const ControlPanel = ({
             </div>
             {infoGrafo.necesitaCompletar && (
               <div className="info-warning">
-                ⚠️ Se agregarán {config.nodeCount - infoGrafo.totalNodos} nodos automáticamente
+                 Se agregarán {config.nodeCount - infoGrafo.totalNodos} nodos automáticamente
               </div>
             )}
           </div>
@@ -64,8 +64,8 @@ const ControlPanel = ({
           <label>Número de Nodos:</label>
           <input 
             type="number" 
-            min="1" 
-            max="100"
+            min="3" 
+            max="120"
             value={config.nodeCount}
             onChange={(e) => handleInputChange('nodeCount', parseInt(e.target.value))}
           />

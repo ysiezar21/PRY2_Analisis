@@ -21,11 +21,11 @@ class AlgorithmService {
     const startTime = performance.now();
     const resultado = monteCarlo(grafo, colorCount, iterations);
     
-    // 🆕 Reproducir frames con historial de conflictos
+    //  Reproducir frames con historial de conflictos
     for (let i = 0; i < resultado.frames.length; i++) {
       onFrame(
         this.convertirGrafoParaVisualizacionFrame(resultado.frames[i]),
-        resultado.historialConflictos && resultado.historialConflictos[i] // 🆕 Pasar datos de conflicto
+        resultado.historialConflictos && resultado.historialConflictos[i] // Pasar datos de conflicto
       );
       await new Promise(resolve => setTimeout(resolve, getTiempoEspera()));
     }
@@ -40,7 +40,7 @@ class AlgorithmService {
       conflictos: resultado.grafo.numeroConflictos || 0,
       exito: resultado.grafo.numeroConflictos === 0,
       coloresAumentados: resultado.grafo.cantidadColoresAumentados || 0,
-      historialConflictos: resultado.historialConflictos || [] // 🆕 Nuevo: retornar historial
+      historialConflictos: resultado.historialConflictos || [] // Nuevo: retornar historial
     };
   }
 
@@ -64,7 +64,7 @@ class AlgorithmService {
     for (let i = 0; i < resultado.frames.length; i++) {
       onFrame(
         this.convertirGrafoParaVisualizacionFrame(resultado.frames[i]),
-        resultado.historialConflictos && resultado.historialConflictos[i] // 🆕 Pasar datos de conflicto
+        resultado.historialConflictos && resultado.historialConflictos[i] //  Pasar datos de conflicto
       );
       await new Promise(resolve => setTimeout(resolve, getTiempoEspera()));
     }
@@ -79,7 +79,7 @@ class AlgorithmService {
       conflictos: resultado.grafo.numeroConflictos || 0,
       exito: resultado.grafo.numeroConflictos === 0,
       coloresAumentados: resultado.grafo.cantidadColoresAumentados || 0,
-      historialConflictos: resultado.historialConflictos || [] // 🆕 Nuevo: retornar historial
+      historialConflictos: resultado.historialConflictos || [] //  Nuevo: retornar historial
     };
   }
 
@@ -106,7 +106,7 @@ class AlgorithmService {
       return { 
         error: error.message, 
         exito: false,
-        historialConflictos: [] // 🆕 Nuevo: historial vacío en caso de error
+        historialConflictos: [] //  Nuevo: historial vacío en caso de error
       };
     }
   }
@@ -156,9 +156,9 @@ class AlgorithmService {
   }
 
   const total = frame.nodos.length;
-  const centerX = 450;
-  const centerY = 450;
-  const radius = 400;
+  const centerX = 600;
+  const centerY = 600;
+  const radius = 550;
 
   const nodos = frame.nodos.map((n, index) => {
     const angle = (2 * Math.PI * index) / total;
@@ -188,5 +188,6 @@ class AlgorithmService {
   return { nodos, aristas };
 }
 }
+
 const algorithmService = new AlgorithmService();
 export default algorithmService;

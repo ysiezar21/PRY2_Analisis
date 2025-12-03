@@ -9,48 +9,18 @@ const colores = [
   "#800080", // morado
   "#00FFFF", // cian
   "#FFC0CB", // rosa
-  "#A52A2A", // marrón
   "#808080", // gris
   "#008000", // verde oscuro
-  "#FFD700", // dorado
-  "#4B0082", // índigo
-  "#FF4500", // naranja oscuro
-  "#2E8B57", // verde mar
-  "#1E90FF", // azul cielo
-  "#D2691E", // chocolate
-  "#ADFF2F", // verde amarillento
   "#FF1493", // rosa profundo
-  "#00FA9A", // verde primavera
-  "#7FFF00", // lima
-  "#DC143C", // carmesí
-  "#00CED1", // turquesa oscuro
-  "#9400D3", // violeta oscuro
-  "#FF6347", // tomate
-  "#40E0D0", // turquesa
-  "#EE82EE", // violeta
+  "#751b1bff", // carmesí
   "#F5DEB3", // trigo
-  "#9ACD32", // amarillo verdoso
-  "#FF69B4", // rosa fuerte
   "#BA55D3", // orquídea oscura
   "#CD5C5C", // rojo indio
-  "#4DB6AC", // teal claro
-  "#FF8C00", // naranja oscuro 2
-  "#20B2AA", // teal
-  "#87CEEB", // azul cielo claro
-  "#6A5ACD", // azul pizarra
-  "#B22222", // rojo oscuro
-  "#5F9EA0", // cadete
-  "#DDA0DD", // orquídea
-  "#66CDAA", // aquamarina oscura
-  "#8B0000", // rojo profundo
-  "#8A2BE2", // azul violeta
-  "#00BFFF", // azul profundo
+  "#887cd7ff", // azul pizarra
+  "#4aa285ff", // aquamarina oscura
   "#C71585", // rosa intenso
-  "#7B68EE", // azul medio
-  "#32CD32", // verde lima
-  "#FFB6C1", // rosa claro
+  "#6a3131ff", // chocolate
   "#00FF7F", // verde fuerte
-  "#4682B4"  // azul acero
 ];
 let tiempoEspera = 1;
 let aumentosFlag = false;
