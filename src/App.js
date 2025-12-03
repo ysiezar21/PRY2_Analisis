@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+  import React, { useState } from 'react';
 import ControlPanel from './components/ControlPanel/ControlPanel';
 import GraphVisualizer from './components/GraphVisualizer/GraphVisualizer';
 import ConflictChart from './components/ConflictChart/ConflictChart';
