@@ -1,9 +1,16 @@
 import { grafo } from '../backend/grafo.js';
-import { monteCarlo, lasVegas } from '../backend/Algoritmos.js';
+import { monteCarlo, lasVegas, getTiempoEspera} from '../backend/Algoritmos.js';
 
 class AlgorithmService {
   
-  crearGrafo(config) {
+  // Acepta grafo existente o crea nuevo
+  obtenerGrafoParaAlgoritmo(config) {
+    // Si se proporciona grafo existente, usarlo
+    if (config.grafoExistente) {
+      return this.convertirGrafoVisualAGrafoInterno(config.grafoExistente);
+    }
+    
+    // Si no, crear nuevo (backward compatibility)
     const nuevoGrafo = new grafo();
     
     if (config.generarAleatorio) {
@@ -17,30 +24,55 @@ class AlgorithmService {
     return nuevoGrafo;
   }
 
+  //  FUNCIÓN PARA CONVERTIR GRAFO VISUAL A INTERNO
+  convertirGrafoVisualAGrafoInterno(grafoVisual) {
+    const nuevoGrafo = new grafo();
+    
+    // Agregar nodos (manteniendo colores si los tienen)
+    grafoVisual.nodos.forEach(nodoVisual => {
+      const nodo = nuevoGrafo.agregarNodo(nodoVisual.color || null);
+    });
+    
+    // Agregar aristas
+    grafoVisual.aristas.forEach(aristaVisual => {
+      if (aristaVisual.source < nuevoGrafo.nodos.length && 
+          aristaVisual.target < nuevoGrafo.nodos.length) {
+        nuevoGrafo.conectarNodos(
+          nuevoGrafo.nodos[aristaVisual.source],
+          nuevoGrafo.nodos[aristaVisual.target]
+        );
+      }
+    });
+    
+    return nuevoGrafo;
+  }
+
   async ejecutarMonteCarlo(grafo, colorCount, iterations, onFrame) {
     const startTime = performance.now();
     const resultado = monteCarlo(grafo, colorCount, iterations);
     
-    // 🆕 Reproducir frames con historial de conflictos
-    for (let i = 0; i < resultado.frames.length; i++) {
-      onFrame(
-        this.convertirGrafoParaVisualizacionFrame(resultado.frames[i]),
-        resultado.historialConflictos && resultado.historialConflictos[i] // 🆕 Pasar datos de conflicto
-      );
-      await new Promise(resolve => setTimeout(resolve, 1));
+    // Reproducir frames con historial de conflictos
+    if (resultado && resultado.frames) {
+      for (let i = 0; i < resultado.frames.length; i++) {
+        const frameVisual = this.convertirGrafoParaVisualizacionFrame(resultado.frames[i]);
+        const conflictData = resultado.historialConflictos && resultado.historialConflictos[i];
+        
+        onFrame(frameVisual, conflictData);
+        await new Promise(resolve => setTimeout(resolve, getTiempoEspera()));
+      }
     }
     
     const endTime = performance.now();
     const executionTime = (endTime - startTime).toFixed(2);
 
     return {
-      grafo: resultado.grafo,
+      grafo: resultado?.grafo || grafo,
       tiempo: executionTime,
-      intentos: resultado.grafo.intentos || iterations,
-      conflictos: resultado.grafo.numeroConflictos || 0,
-      exito: resultado.grafo.numeroConflictos === 0,
-      coloresAumentados: resultado.grafo.cantidadColoresAumentados || 0,
-      historialConflictos: resultado.historialConflictos || [] // 🆕 Nuevo: retornar historial
+      intentos: resultado?.grafo?.intentos || iterations,
+      conflictos: resultado?.grafo?.numeroConflictos || 0,
+      exito: resultado?.grafo?.numeroConflictos === 0,
+      coloresAumentados: resultado?.grafo?.cantidadColoresAumentados || 0,
+      historialConflictos: resultado?.historialConflictos || []
     };
   }
 
@@ -56,17 +88,19 @@ class AlgorithmService {
         conflictos: 'N/A',
         exito: false,
         error: 'No se pudo encontrar solución',
-        historialConflictos: [] // 🆕 Nuevo: historial vacío
+        historialConflictos: []
       };
     }
 
-    // 🆕 Reproducir frames con historial de conflictos
-    for (let i = 0; i < resultado.frames.length; i++) {
-      onFrame(
-        this.convertirGrafoParaVisualizacionFrame(resultado.frames[i]),
-        resultado.historialConflictos && resultado.historialConflictos[i] // 🆕 Pasar datos de conflicto
-      );
-      await new Promise(resolve => setTimeout(resolve, 1));
+    // Reproducir frames con historial de conflictos
+    if (resultado.frames) {
+      for (let i = 0; i < resultado.frames.length; i++) {
+        const frameVisual = this.convertirGrafoParaVisualizacionFrame(resultado.frames[i]);
+        const conflictData = resultado.historialConflictos && resultado.historialConflictos[i];
+        
+        onFrame(frameVisual, conflictData);
+        await new Promise(resolve => setTimeout(resolve, getTiempoEspera()));
+      }
     }
     
     const endTime = performance.now();
@@ -79,13 +113,14 @@ class AlgorithmService {
       conflictos: resultado.grafo.numeroConflictos || 0,
       exito: resultado.grafo.numeroConflictos === 0,
       coloresAumentados: resultado.grafo.cantidadColoresAumentados || 0,
-      historialConflictos: resultado.historialConflictos || [] // 🆕 Nuevo: retornar historial
+      historialConflictos: resultado.historialConflictos || []
     };
   }
 
   async ejecutarAlgoritmo(config, onFrame) {
     try {
-      const grafoObj = this.crearGrafo(config);
+      //  Usar grafo existente o crear nuevo
+      const grafoObj = this.obtenerGrafoParaAlgoritmo(config);
       let resultado;
       
       if (config.algorithm === 'monteCarlo') {
@@ -106,7 +141,7 @@ class AlgorithmService {
       return { 
         error: error.message, 
         exito: false,
-        historialConflictos: [] // 🆕 Nuevo: historial vacío en caso de error
+        historialConflictos: []
       };
     }
   }
@@ -116,12 +151,20 @@ class AlgorithmService {
       return { nodos: [], aristas: [] };
     }
 
-    const nodos = grafo.nodos.map((nodo, index) => ({
-      id: index,
-      color: nodo.color || '#CCCCCC',
-      x: Math.random() * 500 + 50,
-      y: Math.random() * 400 + 50
-    }));
+    const total = grafo.nodos.length;
+    const centerX = 400;
+    const centerY = 300;
+    const radius = 250;
+
+    const nodos = grafo.nodos.map((nodo, index) => {
+      const angle = (2 * Math.PI * index) / total;
+      return {
+        id: index,
+        color: nodo.color || '#CCCCCC',
+        x: centerX + radius * Math.cos(angle),
+        y: centerY + radius * Math.sin(angle)
+      };
+    });
 
     const aristas = [];
     grafo.nodos.forEach((nodo, index) => {
@@ -147,12 +190,20 @@ class AlgorithmService {
       return { nodos: [], aristas: [] };
     }
 
-    const nodos = frame.nodos.map(n => ({
-      id: n.id,
-      color: n.color,
-      x: Math.random() * 500 + 50,
-      y: Math.random() * 400 + 50
-    }));
+    const total = frame.nodos.length;
+    const centerX = 600;
+    const centerY = 600;
+    const radius = 550;
+
+    const nodos = frame.nodos.map((n, index) => {
+      const angle = (2 * Math.PI * index) / total;
+      return {
+        id: n.id,
+        color: n.color,
+        x: centerX + radius * Math.cos(angle),
+        y: centerY + radius * Math.sin(angle)
+      };
+    });
 
     const aristas = [];
     frame.nodos.forEach((nodo, index) => {
@@ -173,4 +224,5 @@ class AlgorithmService {
   }
 }
 
-export default new AlgorithmService();
+const algorithmService = new AlgorithmService();
+export default algorithmService;
