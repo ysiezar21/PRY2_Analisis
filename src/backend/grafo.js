@@ -1,3 +1,4 @@
+
 class nodo {
     constructor(color = null) { 
         this.color = color;
@@ -32,9 +33,13 @@ class grafo {
         this.intentos = 0;
         this.numeroConflictos = 0;
         this.cantidadColoresAumentados = 0;
+        this.coloresUsados = [];
     }
     agregarCantidadColoresAumentado(num){
         this.cantidadColoresAumentados = num;
+    }
+    ActualizarColoresUsados(colores){
+        this.coloresUsados = colores;
     }
     agregarNodo(color = null) { 
         const nuevoNodo = new nodo(color);
@@ -109,6 +114,6 @@ class grafo {
             }
         }
     }
-}
+};
 
 export { grafo, nodo };
