@@ -41,7 +41,7 @@ function App() {
     });
   };
 
-  // 🆕 FUNCIÓN PARA VALIDAR INPUTS NUMÉRICOS
+  // FUNCIÓN PARA VALIDAR INPUTS NUMÉRICOS
   const validarInputsAntesDeEjecutar = () => {
     const errores = [];
     
@@ -66,7 +66,7 @@ function App() {
     };
   };
 
-  // 🆕 FUNCIÓN PARA VALIDAR QUE TODOS LOS NODOS TIENEN AL MENOS UNA CONEXIÓN
+  // FUNCIÓN PARA VALIDAR QUE TODOS LOS NODOS TIENEN AL MENOS UNA CONEXIÓN
   const validarConexionesGrafo = (grafoData) => {
     // Crear un mapa de conexiones por nodo
     const conexionesPorNodo = {};
@@ -117,11 +117,11 @@ function App() {
       id: i,
       x: 0, // Temporal, se calculará después
       y: 0, // Temporal, se calculará después
-      color: null, // 🆕 IMPORTANTE: Sin color inicial
+      color: null, // Sin color inicial
       esManual: false
     }));
 
-    // 🆕 Aplicar distribución circular
+    //Aplicar distribución circular
     const nodos = distribuirNodosCircularmente(nodosIniciales);
 
     let aristas = [];
@@ -158,7 +158,7 @@ function App() {
     return nuevoGrafo;
   };
 
-  // 🆕 2. FUNCIÓN PARA AGREGAR NODO MANUAL CON DISTRIBUCIÓN CIRCULAR
+  // FUNCIÓN PARA AGREGAR NODO MANUAL CON DISTRIBUCIÓN CIRCULAR
   const handleAddManualNode = () => {
     if (graphData.nodos.length >= 60) {
       alert("❌ Límite máximo de 60 nodos para grafos manuales alcanzado");
@@ -167,7 +167,7 @@ function App() {
 
     const nuevoId = graphData.nodos.length;
     
-    // 🆕 AGREGAR NODO SIN POSICIÓN INICIAL
+    //AGREGAR NODO SIN POSICIÓN INICIAL
     const nuevoNodo = { 
       id: nuevoId, 
       x: 0, // Temporal, se calculará después
@@ -176,7 +176,7 @@ function App() {
       esManual: true
     };
     
-    // 🆕 CREAR NUEVA LISTA DE NODOS Y APLICAR DISTRIBUCIÓN CIRCULAR
+    //CREAR NUEVA LISTA DE NODOS Y APLICAR DISTRIBUCIÓN CIRCULAR
     const nuevosNodos = [...graphData.nodos, nuevoNodo];
     const nodosConPosicion = distribuirNodosCircularmente(nuevosNodos);
     
@@ -200,7 +200,7 @@ function App() {
 
     const nuevoId = graphData.nodos.length;
     
-    // 🆕 AGREGAR NODO SIN POSICIÓN INICIAL
+    //AGREGAR NODO SIN POSICIÓN INICIAL
     const nuevoNodo = { 
       id: nuevoId, 
       x: 0, // Temporal, se calculará después
@@ -209,7 +209,7 @@ function App() {
       esManual: true
     };
     
-    // 🆕 CREAR NUEVA LISTA DE NODOS Y APLICAR DISTRIBUCIÓN CIRCULAR
+    //CREAR NUEVA LISTA DE NODOS Y APLICAR DISTRIBUCIÓN CIRCULAR
     const nuevosNodos = [...graphData.nodos, nuevoNodo];
     const nodosConPosicion = distribuirNodosCircularmente(nuevosNodos);
     
@@ -270,7 +270,7 @@ function App() {
       esManual: false
     }));
 
-    // 🆕 Aplicar distribución circular
+    //Aplicar distribución circular
     const nodos = distribuirNodosCircularmente(nodosIniciales);
     
     const randomGraph = {
@@ -313,7 +313,7 @@ function App() {
     console.log("🎲 Grafo aleatorio generado (con distribución circular)");
   };
 
-  // 🆕 3. FUNCIÓN PARA EJECUTAR ALGORITMO CON VALIDACIONES COMPLETAS
+  // FUNCIÓN PARA EJECUTAR ALGORITMO CON VALIDACIONES COMPLETAS
   const handleRunAlgorithm = async () => {
     // Validación 1: Grafo existe
     if (graphData.nodos.length === 0) {
@@ -484,7 +484,7 @@ function App() {
 
   // MANEJAR CAMBIO DE CONFIGURACIÓN CON VALIDACIONES MEJORADAS
   const handleConfigChange = (newConfig) => {
-    // 🆕 VALIDACIÓN MEJORADA - NO CAMBIAR INMEDIATAMENTE
+    // VALIDACIÓN MEJORADA - NO CAMBIAR INMEDIATAMENTE
     // Los valores se mantienen como los escribe el usuario
     // La validación final se hace al ejecutar el algoritmo
     setGraphConfig(newConfig);
